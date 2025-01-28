@@ -1,0 +1,108 @@
+- teslaField: Location
+  teslaType: LocationValue
+  vssSignal: Vehicle.CurrentLocation.Latitude
+
+- teslaField: Location
+  teslaType: LocationValue
+  vssSignal: Vehicle.CurrentLocation.Longitude
+
+- teslaField: ACChargingPower
+  teslaType: string
+  teslaUnit: kW
+  vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: DCChargingPower
+  teslaType: string
+  teslaUnit: kW
+  vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: ACChargingEnergyIn
+  teslaType: string
+  teslaUnit: kWh
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: DCChargingEnergyIn
+  teslaType: string
+  teslaUnit: kWh
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: Soc
+  teslaType: string
+  teslaUnit: percent
+  vssSignal: Vehicle.Powertrain.TractionBattery.StateOfCharge.Current
+
+- teslaField: TpmsPressureFl
+  teslaType: string
+  teslaUnit: bar
+  vssSignal: Vehicle.Chassis.Axle.Row1.Wheel.Left.Tire.Pressure
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: TpmsPressureFr
+  teslaType: string
+  teslaUnit: bar
+  vssSignal: Vehicle.Chassis.Axle.Row1.Wheel.Right.Tire.Pressure
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: TpmsPressureRl
+  teslaType: string
+  teslaUnit: bar
+  vssSignal: Vehicle.Chassis.Axle.Row2.Wheel.Left.Tire.Pressure
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: TpmsPressureRr
+  teslaType: string
+  teslaUnit: bar
+  vssSignal: Vehicle.Chassis.Axle.Row2.Wheel.Right.Tire.Pressure
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: OutsideTemp
+  teslaType: string
+  teslaUnit: celsius
+  vssSignal: Vehicle.Exterior.AirTemperature
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: EstBatteryRange
+  teslaType: string
+  teslaUnit: mi
+  vssSignal: Vehicle.Powertrain.Range
+  automations:
+  - PARSE_FLOAT
+  # Can't convert units automatically because the VSS spec has meters, but we've always output km.
+
+- teslaField: ChargeLimitSoc
+  teslaType: string
+  teslaUnit: percent
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ChargeLimit
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: VehicleSpeed
+  teslaType: string
+  teslaUnit: mph
+  vssSignal: Vehicle.Speed
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
