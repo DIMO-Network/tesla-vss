@@ -9,7 +9,7 @@ import (
 	"github.com/DIMO-Network/model-garage/pkg/vss"
 )
 
-func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
+func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]vss.Signal, []error) {
     var out []vss.Signal
     var outErr []error
 
@@ -24,8 +24,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
                     outErr = append(outErr, err)
                 } else {
                     sig := vss.Signal{
+                        TokenID:   tokenID,
                         Name:      "{{.JSONName}}",
                         Timestamp: ts,
+                        Source:    source,
                     }
                     sig.SetValue(val)
                     out = append(out, sig)

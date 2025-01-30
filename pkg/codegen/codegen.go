@@ -4,7 +4,11 @@ import (
 	"bytes"
 	_ "embed"
 	"fmt"
+	"go/ast"
 	"go/format"
+	"go/parser"
+	"go/printer"
+	"go/token"
 	"html/template"
 	"io"
 	"log"
@@ -159,6 +163,28 @@ func writeOuter(tmplInput *TemplateInput, outerPath string) error {
 }
 
 func writeInner(tmplInput *TemplateInput, innerPath string) error {
+	fset := token.NewFileSet()
+	astFile, err := parser.ParseFile(fset, innerPath, nil, parser.ParseComments)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+	} else {
+		for i, decl := range astFile.Decls {
+			if fn, ok := decl.(*ast.FuncDecl); ok {
+				var buf bytes.Buffer
+				err := format.Node(&buf, fset, &printer.CommentedNode{
+					Node:     fn.Body,
+					Comments: astFile.Comments,
+				})
+				if err != nil {
+					panic(err)
+				}
+				fmt.Println(i, string(buf.Bytes()))
+			}
+		}
+	}
+
 	t, err := template.New("inner").Parse(innerTmpl)
 	if err != nil {
 		panic(err)

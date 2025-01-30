@@ -9,7 +9,7 @@ import (
 	"github.com/teslamotors/fleet-telemetry/protos"
 )
 
-func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
+func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]vss.Signal, []error) {
 	var out []vss.Signal
 	var outErr []error
 
@@ -23,8 +23,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "currentLocationLatitude",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -38,8 +40,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "currentLocationLongitude",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -53,8 +57,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "powertrainTractionBatteryCurrentPower",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -68,8 +74,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "powertrainTractionBatteryCurrentPower",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -83,8 +91,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "powertrainTractionBatteryChargingAddedEnergy",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -98,8 +108,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "powertrainTractionBatteryChargingAddedEnergy",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -113,8 +125,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "powertrainTractionBatteryStateOfChargeCurrent",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -128,8 +142,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "chassisAxleRow1WheelLeftTirePressure",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -143,8 +159,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "chassisAxleRow1WheelRightTirePressure",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -158,8 +176,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "chassisAxleRow2WheelLeftTirePressure",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -173,8 +193,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "chassisAxleRow2WheelRightTirePressure",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -188,8 +210,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "exteriorAirTemperature",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -203,8 +227,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "powertrainRange",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -218,8 +244,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "powertrainTractionBatteryChargingChargeLimit",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)
@@ -233,8 +261,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
+						TokenID:   tokenID,
 						Name:      "speed",
 						Timestamp: ts,
+						Source:    source,
 					}
 					sig.SetValue(val)
 					out = append(out, sig)

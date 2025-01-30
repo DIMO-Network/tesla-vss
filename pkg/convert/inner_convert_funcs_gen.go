@@ -5,11 +5,11 @@ import (
 )
 
 func ConvertLocationToCurrentLocationLatitudeInner(val *protos.LocationValue) (float64, error) {
-	panic("not implemented")
+	return val.Latitude, nil
 }
 
 func ConvertLocationToCurrentLocationLongitudeInner(val *protos.LocationValue) (float64, error) {
-	panic("not implemented")
+	return val.Longitude, nil
 }
 
 func ConvertACChargingPowerToPowertrainTractionBatteryCurrentPowerInner(val float64) (float64, error) {
