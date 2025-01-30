@@ -65,6 +65,7 @@ func main() {
 	if len(os.Args) < 2 {
 		log.Fatal("Missing required argument: path to rules file")
 	}
+
 	rulesFilePath := os.Args[1]
 
 	flag.String("output", "", "Path ")

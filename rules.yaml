@@ -89,7 +89,7 @@
   vssSignal: Vehicle.Powertrain.Range
   automations:
   - PARSE_FLOAT
-  # Can't convert units automatically because the VSS spec has meters, but we've always output km.
+  # Can't convert units automatically because the VSS spec has meters, but we've always output kilometers.
 
 - teslaField: ChargeLimitSoc
   teslaType: string
