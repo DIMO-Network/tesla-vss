@@ -42,6 +42,9 @@
   teslaType: string
   teslaUnit: percent
   vssSignal: Vehicle.Powertrain.TractionBattery.StateOfCharge.Current
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
 
 - teslaField: TpmsPressureFl
   teslaType: string

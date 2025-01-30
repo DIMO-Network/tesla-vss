@@ -1,6 +1,7 @@
-package main
+package {{.Package}}
 
 import (
+    "fmt"
     "strconv"
 
     "github.com/DIMO-Network/tesla-vss/pkg/unit"
@@ -14,10 +15,10 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 
     ts := payload.GetCreatedAt().AsTime()
 
-    for _, d := range out.GetData() {
+    for _, d := range payload.GetData() {
         {{- range .Conversions}}
         if d.GetKey() == protos.Field_{{.TeslaField}} {
-            if v, ok := d.GetValue().(*protos.{{.WrapperName}}); ok {
+            if v, ok := d.GetValue().Value.(*protos.{{.WrapperName}}); ok {
                 val, err := Convert{{.TeslaField}}To{{.GoVSSSignalName}}Outer(v.{{.WrapperFieldName}})
                 if err != nil {
                     outErr = append(outErr, err)
@@ -43,7 +44,7 @@ func Convert{{.TeslaField}}To{{.GoVSSSignalName}}Outer(wrap {{.OuterInputType}})
     fp, err := strconv.ParseFloat(wrap, 64)
     if err != nil {
         var tmpOut {{.OutputType}}
-        return tmpOut, fmt.Sprintf("failed to parse float: %w", err)
+        return tmpOut, fmt.Errorf("failed to parse float: %w", err)
     }
     {{if .UnitFunc}}
     fp = unit.{{.UnitFunc}}(fp)

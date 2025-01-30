@@ -1,11 +1,7 @@
-package main
+package {{.Package}}
 
 import (
-    "strconv"
-
-    "github.com/DIMO-Network/tesla-vss/pkg/unit"
 	"github.com/teslamotors/fleet-telemetry/protos"
-	"github.com/DIMO-Network/model-garage/pkg/vss"
 )
 
 {{range .Conversions}}

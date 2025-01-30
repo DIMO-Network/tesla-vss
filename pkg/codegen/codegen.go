@@ -41,7 +41,7 @@ var innerTmpl string
 //go:embed outer.tmpl
 var outerTmpl string
 
-func Generate(rulesPath, outerOutputPath, innerOutputPath string) error {
+func Generate(packageName, rulesPath, outerOutputPath, innerOutputPath string) error {
 	signalInfos, err := schema.LoadSignalsCSV(strings.NewReader(schema.VssRel42DIMO()))
 	if err != nil {
 		log.Fatalf("Failed to load VSS schema: %v", err)
@@ -57,7 +57,9 @@ func Generate(rulesPath, outerOutputPath, innerOutputPath string) error {
 		return fmt.Errorf("failed to load rules: %w", err)
 	}
 
-	var tmplInput TemplateInput
+	tmplInput := &TemplateInput{
+		Package: packageName,
+	}
 
 	for _, r := range rules {
 		signalInfo, ok := signalInfoBySignal[r.VSSSignal]
@@ -93,6 +95,11 @@ func Generate(rulesPath, outerOutputPath, innerOutputPath string) error {
 			convertUnit = n
 		}
 
+		innerInputType := teslaType.ValueType
+		if slices.Contains(r.Automations, ParseFloatFlag) {
+			innerInputType = "float64"
+		}
+
 		tmplInput.Conversions = append(tmplInput.Conversions, Conversion{
 			TeslaField:       r.TeslaField,
 			WrapperName:      teslaType.TeslaWrapperType,
@@ -103,10 +110,25 @@ func Generate(rulesPath, outerOutputPath, innerOutputPath string) error {
 			OutputType:       signalInfo.GOType(),
 			ParseFloat:       parseFloat,
 			UnitFunc:         convertUnit,
+			InnerInputType:   innerInputType,
 		})
 	}
 
-	t, err := template.New("process").Parse(outerTmpl)
+	err = writeOuter(tmplInput, outerOutputPath)
+	if err != nil {
+		return err
+	}
+
+	err = writeInner(tmplInput, innerOutputPath)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func writeOuter(tmplInput *TemplateInput, outerPath string) error {
+	t, err := template.New("outer").Parse(outerTmpl)
 	if err != nil {
 		panic(err)
 	}
@@ -122,7 +144,38 @@ func Generate(rulesPath, outerOutputPath, innerOutputPath string) error {
 		panic(err)
 	}
 
-	f, err := os.Create(outerOutputPath)
+	f, err := os.Create(outerPath)
+	if err != nil {
+		return fmt.Errorf("error opening outer output file: %w", err)
+	}
+	defer f.Close()
+
+	_, err = f.Write(out)
+	if err != nil {
+		return fmt.Errorf("error writing outer output file: %w", err)
+	}
+
+	return nil
+}
+
+func writeInner(tmplInput *TemplateInput, innerPath string) error {
+	t, err := template.New("inner").Parse(innerTmpl)
+	if err != nil {
+		panic(err)
+	}
+
+	var buf bytes.Buffer
+	err = t.Execute(&buf, tmplInput)
+	if err != nil {
+		panic(err)
+	}
+
+	out, err := format.Source(buf.Bytes())
+	if err != nil {
+		panic(err)
+	}
+
+	f, err := os.Create(innerPath)
 	if err != nil {
 		return fmt.Errorf("error opening outer output file: %w", err)
 	}
@@ -167,12 +220,14 @@ type Conversion struct {
 	JSONName         string
 	InnerInputType   string
 	OutputType       string
+	Body             string
 
 	ParseFloat bool
 	UnitFunc   string
 }
 
 type TemplateInput struct {
+	Package     string
 	Conversions []Conversion
 }
 
@@ -195,6 +250,7 @@ type TeslaTypeDescription struct {
 	TeslaWrapperType      string
 	TeslaWrapperFieldName string
 	ValueType             string
+	NiceName              string
 }
 
 var teslaTypeToAttributes = map[string]TeslaTypeDescription{
@@ -202,10 +258,12 @@ var teslaTypeToAttributes = map[string]TeslaTypeDescription{
 		TeslaWrapperType:      "Value_StringValue",
 		TeslaWrapperFieldName: "StringValue",
 		ValueType:             "string",
+		NiceName:              "String",
 	},
 	"LocationValue": {
-		TeslaWrapperType:      "LocationValue",
+		TeslaWrapperType:      "Value_LocationValue",
 		TeslaWrapperFieldName: "LocationValue",
-		ValueType:             "*proto.LocationValue",
+		ValueType:             "*protos.LocationValue",
+		NiceName:              "LocationValue",
 	},
 }
