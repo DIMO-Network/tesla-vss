@@ -3,8 +3,11 @@ package main
 import (
 	"bytes"
 	_ "embed"
+	"flag"
+	"fmt"
 	"go/format"
 	"io"
+	"log"
 	"os"
 	"slices"
 	"strings"
@@ -33,15 +36,42 @@ const (
 	ConvertUnitFlag = "CONVERT_UNIT"
 )
 
-//go:embed process.tmpl
+//go:embed outer.tmpl
 var tmpl string
 
-func main() {
-	vss := schema.VssRel42DIMO()
-
-	signalInfos, err := schema.LoadSignalsCSV(strings.NewReader(vss))
+func loadRules(path string) ([]Rule, error) {
+	f, err := os.Open(path)
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("failed to open file: %w", err)
+	}
+	defer f.Close()
+
+	fb, err := io.ReadAll(f)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
+
+	var rules []Rule
+
+	err = yaml.Unmarshal(fb, &rules)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse rules YAML: %w", err)
+	}
+
+	return rules, nil
+}
+
+func main() {
+	if len(os.Args) < 2 {
+		log.Fatal("Missing required argument: path to rules file")
+	}
+	rulesFilePath := os.Args[1]
+
+	flag.String("output", "", "Path ")
+
+	signalInfos, err := schema.LoadSignalsCSV(strings.NewReader(schema.VssRel42DIMO()))
+	if err != nil {
+		log.Fatalf("Failed to load VSS schema: %v", err)
 	}
 
 	signalInfoBySignal := make(map[string]*schema.SignalInfo, len(signalInfos))
@@ -49,22 +79,9 @@ func main() {
 		signalInfoBySignal[s.Name] = s
 	}
 
-	f, err := os.Open("rules.yaml")
+	rules, err := loadRules(rulesFilePath)
 	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	fb, err := io.ReadAll(f)
-	if err != nil {
-		panic(err)
-	}
-
-	var rules []Rule
-
-	err = yaml.Unmarshal(fb, &rules)
-	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to load rules: %v", err)
 	}
 
 	var tmplInput TemplateInput
@@ -80,23 +97,13 @@ func main() {
 			panic("don't recognize the Tesla field " + r.TeslaField)
 		}
 
-		parseFloat := false
+		parseFloat := r.TeslaType == "string" && slices.Contains(r.Automations, ParseFloatFlag)
 
 		var convertUnit string
 
-		var wrapperName, wrapperField, inputType string
-		if r.TeslaType == "string" {
-			wrapperName = "Value_StringValue"
-			wrapperField = "StringValue"
-			inputType = "string"
-			// Just plain parse okay too
-			if slices.Contains(r.Automations, ParseFloatFlag) {
-				parseFloat = true
-			}
-		} else if r.TeslaType == "LocationValue" {
-			wrapperName = "Value_LocationValue"
-			wrapperField = "LocationValue"
-			inputType = "*proto.LocationValue"
+		teslaType, ok := teslaTypeToAttributes[r.TeslaType]
+		if !ok {
+			panic("unrecognized Tesla type " + r.TeslaType)
 		}
 
 		if slices.Contains(r.Automations, ConvertUnitFlag) && r.TeslaUnit != signalInfo.Unit {
@@ -115,10 +122,10 @@ func main() {
 
 		tmplInput.Conversions = append(tmplInput.Conversions, Conversion{
 			TeslaField:       r.TeslaField,
-			WrapperName:      wrapperName,
-			WrapperFieldName: wrapperField,
+			WrapperName:      teslaType.TeslaWrapperType,
+			WrapperFieldName: teslaType.TeslaWrapperFieldName,
 			GoVSSSignalName:  signalInfo.GOName,
-			OuterInputType:   inputType,
+			OuterInputType:   teslaType.ValueType,
 			JSONName:         signalInfo.JSONName,
 			OutputType:       signalInfo.GOType(),
 			ParseFloat:       parseFloat,
@@ -126,7 +133,7 @@ func main() {
 		})
 	}
 
-	t, err := template.New("xdd").Parse(tmpl)
+	t, err := template.New("process").Parse(tmpl)
 	if err != nil {
 		panic(err)
 	}
@@ -184,5 +191,24 @@ var conversions = map[string]map[string]string{
 	},
 	"mph": {
 		"km/h": "MilesPerHourToKilometersPerHour",
+	},
+}
+
+type TeslaTypeDescription struct {
+	TeslaWrapperType      string
+	TeslaWrapperFieldName string
+	ValueType             string
+}
+
+var teslaTypeToAttributes = map[string]TeslaTypeDescription{
+	"string": {
+		TeslaWrapperType:      "Value_StringValue",
+		TeslaWrapperFieldName: "StringValue",
+		ValueType:             "string",
+	},
+	"LocationValue": {
+		TeslaWrapperType:      "LocationValue",
+		TeslaWrapperFieldName: "LocationValue",
+		ValueType:             "*proto.LocationValue",
 	},
 }

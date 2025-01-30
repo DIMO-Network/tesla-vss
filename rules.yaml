@@ -9,7 +9,7 @@
 - teslaField: ACChargingPower
   teslaType: string
   teslaUnit: kW
-  vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower
+  vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower # Happily, in VSS this is positive for charging.
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT

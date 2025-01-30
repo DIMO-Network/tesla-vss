@@ -38,7 +38,7 @@ func ProcessPayload(payload *protos.Payload) ([]vss.Signal, []error) {
 }
 
 {{range .Conversions}}
-func Convert{{.TeslaField}}To{{.GoVSSSignalName}}Outer(wrap {{.OuterInputType}}) ({{.OutputType}}, err error) {
+func Convert{{.TeslaField}}To{{.GoVSSSignalName}}Outer(wrap {{.OuterInputType}}) ({{.OutputType}}, error) {
     {{- if .ParseFloat}}
     fp, err := strconv.ParseFloat(wrap, 64)
     if err != nil {
