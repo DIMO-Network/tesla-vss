@@ -36,5 +36,5 @@ func TestConvert(t *testing.T) {
 		Vin:       vin,
 	}
 
-	fmt.Println(pl)
+	fmt.Println(&pl)
 }

@@ -4,7 +4,7 @@ go 1.23.5
 
 require github.com/DIMO-Network/model-garage v0.4.5
 
-require google.golang.org/protobuf v1.35.1 // indirect
+require google.golang.org/protobuf v1.35.1
 
 require (
 	github.com/teslamotors/fleet-telemetry v0.6.0

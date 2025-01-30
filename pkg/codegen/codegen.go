@@ -1,21 +1,25 @@
-package main
+package codegen
 
 import (
 	"bytes"
 	_ "embed"
-	"flag"
 	"fmt"
 	"go/format"
+	"html/template"
 	"io"
 	"log"
 	"os"
 	"slices"
 	"strings"
-	"text/template"
 
 	"github.com/DIMO-Network/model-garage/pkg/schema"
 	"github.com/teslamotors/fleet-telemetry/protos"
 	"gopkg.in/yaml.v3"
+)
+
+const (
+	ParseFloatFlag  = "PARSE_FLOAT"
+	ConvertUnitFlag = "CONVERT_UNIT"
 )
 
 type Rule struct {
@@ -31,45 +35,13 @@ type Rule struct {
 	Automations []string `yaml:"automations"`
 }
 
-const (
-	ParseFloatFlag  = "PARSE_FLOAT"
-	ConvertUnitFlag = "CONVERT_UNIT"
-)
+//go:embed inner.tmpl
+var innerTmpl string
 
 //go:embed outer.tmpl
-var tmpl string
+var outerTmpl string
 
-func loadRules(path string) ([]Rule, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
-	}
-	defer f.Close()
-
-	fb, err := io.ReadAll(f)
-	if err != nil {
-		return nil, fmt.Errorf("failed to read file: %w", err)
-	}
-
-	var rules []Rule
-
-	err = yaml.Unmarshal(fb, &rules)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse rules YAML: %w", err)
-	}
-
-	return rules, nil
-}
-
-func main() {
-	if len(os.Args) < 2 {
-		log.Fatal("Missing required argument: path to rules file")
-	}
-
-	rulesFilePath := os.Args[1]
-
-	flag.String("output", "", "Path ")
-
+func Generate(rulesPath, outerOutputPath, innerOutputPath string) error {
 	signalInfos, err := schema.LoadSignalsCSV(strings.NewReader(schema.VssRel42DIMO()))
 	if err != nil {
 		log.Fatalf("Failed to load VSS schema: %v", err)
@@ -80,9 +52,9 @@ func main() {
 		signalInfoBySignal[s.Name] = s
 	}
 
-	rules, err := loadRules(rulesFilePath)
+	rules, err := loadRules(rulesPath)
 	if err != nil {
-		log.Fatalf("Failed to load rules: %v", err)
+		return fmt.Errorf("failed to load rules: %w", err)
 	}
 
 	var tmplInput TemplateInput
@@ -134,7 +106,7 @@ func main() {
 		})
 	}
 
-	t, err := template.New("process").Parse(tmpl)
+	t, err := template.New("process").Parse(outerTmpl)
 	if err != nil {
 		panic(err)
 	}
@@ -150,17 +122,40 @@ func main() {
 		panic(err)
 	}
 
-	os.Stdout.Write(out)
+	f, err := os.Create(outerOutputPath)
+	if err != nil {
+		return fmt.Errorf("error opening outer output file: %w", err)
+	}
+	defer f.Close()
+
+	_, err = f.Write(out)
+	if err != nil {
+		return fmt.Errorf("error writing outer output file: %w", err)
+	}
+
+	return nil
 }
 
-type Field struct {
-	Name  string
-	Types []Type
-}
+func loadRules(path string) ([]Rule, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open file: %w", err)
+	}
+	defer f.Close()
 
-type Type struct {
-	GoType      string
-	Conversions []Conversion
+	fb, err := io.ReadAll(f)
+	if err != nil {
+		return nil, fmt.Errorf("failed to read file: %w", err)
+	}
+
+	var rules []Rule
+
+	err = yaml.Unmarshal(fb, &rules)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse rules YAML: %w", err)
+	}
+
+	return rules, nil
 }
 
 type Conversion struct {
@@ -170,6 +165,7 @@ type Conversion struct {
 	GoVSSSignalName  string
 	OuterInputType   string
 	JSONName         string
+	InnerInputType   string
 	OutputType       string
 
 	ParseFloat bool
