@@ -11,7 +11,7 @@ import (
 )
 
 func TestConvert(t *testing.T) {
-	teslaConnection := "0xc4035Fecb1cc906130423EF05f9C20977F643722"
+	teslaConnection := "0xc4035Fecb1cc906130423EF05f9C20977F643722" // This is the real value in dev and prod.
 
 	ts, err := time.Parse(time.RFC3339, "2025-01-01T09:00:00Z")
 	if err != nil {
