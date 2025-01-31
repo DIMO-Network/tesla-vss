@@ -68,12 +68,12 @@ func Generate(packageName, rulesPath, outerOutputPath, innerOutputPath string) e
 	for _, r := range rules {
 		signalInfo, ok := signalInfoBySignal[r.VSSSignal]
 		if !ok {
-			panic("don't recognize the VSS signal " + r.VSSSignal)
+			return fmt.Errorf("unrecognized VSS signal %q", r.VSSSignal)
 		}
 
 		_, ok = protos.Field_value[r.TeslaField]
 		if !ok {
-			panic("don't recognize the Tesla field " + r.TeslaField)
+			return fmt.Errorf("unrecognized Tesla field %q", r.TeslaField)
 		}
 
 		parseFloat := r.TeslaType == "string" && slices.Contains(r.Automations, ParseFloatFlag)
@@ -82,18 +82,18 @@ func Generate(packageName, rulesPath, outerOutputPath, innerOutputPath string) e
 
 		teslaType, ok := teslaTypeToAttributes[r.TeslaType]
 		if !ok {
-			panic("unrecognized Tesla type " + r.TeslaType)
+			return fmt.Errorf("unsupported Tesla type %q", r.TeslaType)
 		}
 
 		if slices.Contains(r.Automations, ConvertUnitFlag) && r.TeslaUnit != signalInfo.Unit {
 			m, ok := conversions[r.TeslaUnit]
 			if !ok {
-				panic("no conversion from unit " + r.TeslaUnit)
+				return fmt.Errorf("no conversion from unit %q", r.TeslaUnit)
 			}
 
 			n, ok := m[signalInfo.Unit]
 			if !ok {
-				panic("no conversion from unit " + r.TeslaUnit + " to " + signalInfo.Unit)
+				return fmt.Errorf("no conversion from unit %s to %s", r.TeslaUnit, signalInfo.Unit)
 			}
 
 			convertUnit = n
