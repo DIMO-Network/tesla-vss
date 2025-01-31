@@ -1,65 +1,80 @@
 package convert
 
 import (
+	"github.com/DIMO-Network/tesla-vss/pkg/unit"
 	"github.com/teslamotors/fleet-telemetry/protos"
 )
 
-func ConvertLocationToCurrentLocationLatitudeInner(val *protos.LocationValue) (float64, error) {
+func ConvertLocationLocationValueToCurrentLocationLatitudeInner(val *protos.LocationValue) (float64, error) {
 	return val.Latitude, nil
 }
 
-func ConvertLocationToCurrentLocationLongitudeInner(val *protos.LocationValue) (float64, error) {
+func ConvertLocationLocationValueToCurrentLocationLongitudeInner(val *protos.LocationValue) (float64, error) {
 	return val.Longitude, nil
 }
 
-func ConvertACChargingPowerToPowertrainTractionBatteryCurrentPowerInner(val float64) (float64, error) {
+func ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertDCChargingPowerToPowertrainTractionBatteryCurrentPowerInner(val float64) (float64, error) {
+func ConvertACChargingPowerStringToPowertrainTractionBatteryChargingIsChargingInner(val float64) (float64, error) {
+	if val > 0 {
+		return 1, nil
+	}
+	return 0, nil
+}
+
+func ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertACChargingEnergyInToPowertrainTractionBatteryChargingAddedEnergyInner(val float64) (float64, error) {
+func ConvertDCChargingPowerStringToPowertrainTractionBatteryChargingIsChargingInner(val float64) (float64, error) {
+	if val > 0 {
+		return 1, nil
+	}
+	return 0, nil
+}
+
+func ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertDCChargingEnergyInToPowertrainTractionBatteryChargingAddedEnergyInner(val float64) (float64, error) {
+func ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertSocToPowertrainTractionBatteryStateOfChargeCurrentInner(val float64) (float64, error) {
+func ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertTpmsPressureFlToChassisAxleRow1WheelLeftTirePressureInner(val float64) (float64, error) {
+func ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressureInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertTpmsPressureFrToChassisAxleRow1WheelRightTirePressureInner(val float64) (float64, error) {
+func ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressureInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertTpmsPressureRlToChassisAxleRow2WheelLeftTirePressureInner(val float64) (float64, error) {
+func ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressureInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertTpmsPressureRrToChassisAxleRow2WheelRightTirePressureInner(val float64) (float64, error) {
+func ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressureInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertOutsideTempToExteriorAirTemperatureInner(val float64) (float64, error) {
+func ConvertOutsideTempStringToExteriorAirTemperatureInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertEstBatteryRangeToPowertrainRangeInner(val float64) (float64, error) {
+func ConvertEstBatteryRangeStringToPowertrainRangeInner(val float64) (float64, error) {
+	return unit.MilesToKilometers(val), nil
+}
+
+func ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimitInner(val float64) (float64, error) {
 	return val, nil
 }
 
-func ConvertChargeLimitSocToPowertrainTractionBatteryChargingChargeLimitInner(val float64) (float64, error) {
-	return val, nil
-}
-
-func ConvertVehicleSpeedToSpeedInner(val float64) (float64, error) {
+func ConvertVehicleSpeedStringToSpeedInner(val float64) (float64, error) {
 	return val, nil
 }

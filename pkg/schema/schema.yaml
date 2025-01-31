@@ -14,6 +14,13 @@
   - PARSE_FLOAT
   - CONVERT_UNIT
 
+- teslaField: ACChargingPower
+  teslaType: string
+  teslaUnit: kW
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.IsCharging
+  automations:
+  - PARSE_FLOAT
+
 - teslaField: DCChargingPower
   teslaType: string
   teslaUnit: kW
@@ -21,6 +28,13 @@
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
+
+- teslaField: DCChargingPower
+  teslaType: string
+  teslaUnit: kW
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.IsCharging
+  automations:
+  - PARSE_FLOAT
 
 - teslaField: ACChargingEnergyIn
   teslaType: string

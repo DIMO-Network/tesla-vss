@@ -104,7 +104,7 @@ func Generate(packageName, rulesPath, outerOutputPath, innerOutputPath string) e
 			innerInputType = "float64"
 		}
 
-		tmplInput.Conversions = append(tmplInput.Conversions, Conversion{
+		tmplInput.Conversions = append(tmplInput.Conversions, &Conversion{
 			TeslaField:       r.TeslaField,
 			WrapperName:      teslaType.TeslaWrapperType,
 			WrapperFieldName: teslaType.TeslaWrapperFieldName,
@@ -115,6 +115,7 @@ func Generate(packageName, rulesPath, outerOutputPath, innerOutputPath string) e
 			ParseFloat:       parseFloat,
 			UnitFunc:         convertUnit,
 			InnerInputType:   innerInputType,
+			TeslaTypeName:    teslaType.NiceName,
 		})
 	}
 
@@ -163,6 +164,8 @@ func writeOuter(tmplInput *TemplateInput, outerPath string) error {
 }
 
 func writeInner(tmplInput *TemplateInput, innerPath string) error {
+	existingBodies := make(map[string]string)
+
 	fset := token.NewFileSet()
 	astFile, err := parser.ParseFile(fset, innerPath, nil, parser.ParseComments)
 	if err != nil {
@@ -170,7 +173,7 @@ func writeInner(tmplInput *TemplateInput, innerPath string) error {
 			return err
 		}
 	} else {
-		for i, decl := range astFile.Decls {
+		for _, decl := range astFile.Decls {
 			if fn, ok := decl.(*ast.FuncDecl); ok {
 				var buf bytes.Buffer
 				err := format.Node(&buf, fset, &printer.CommentedNode{
@@ -180,8 +183,15 @@ func writeInner(tmplInput *TemplateInput, innerPath string) error {
 				if err != nil {
 					panic(err)
 				}
-				fmt.Println(i, string(buf.Bytes()))
+				existingBodies[fn.Name.Name] = string(buf.Bytes())
 			}
+		}
+	}
+
+	for _, conv := range tmplInput.Conversions {
+		name := fmt.Sprintf("Convert%s%sTo%sInner", conv.TeslaField, conv.TeslaTypeName, conv.GoVSSSignalName)
+		if body, ok := existingBodies[name]; ok {
+			conv.Body = body
 		}
 	}
 
@@ -195,6 +205,8 @@ func writeInner(tmplInput *TemplateInput, innerPath string) error {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Println(string(buf.Bytes()))
 
 	out, err := format.Source(buf.Bytes())
 	if err != nil {
@@ -248,13 +260,15 @@ type Conversion struct {
 	OutputType       string
 	Body             string
 
+	TeslaTypeName string
+
 	ParseFloat bool
 	UnitFunc   string
 }
 
 type TemplateInput struct {
 	Package     string
-	Conversions []Conversion
+	Conversions []*Conversion
 }
 
 var conversions = map[string]map[string]string{

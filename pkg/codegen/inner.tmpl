@@ -1,19 +1,21 @@
 package {{.Package}}
 
 import (
+    "github.com/DIMO-Network/tesla-vss/pkg/unit"
 	"github.com/teslamotors/fleet-telemetry/protos"
 )
 
 {{range .Conversions}}
-func Convert{{.TeslaField}}To{{.GoVSSSignalName}}Inner(val {{.InnerInputType}}) ({{.OutputType}}, error) {
-    {{- if .Body }}
-    {{.Body}}
-    {{- else}}
+func Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}Inner(val {{.InnerInputType}}) ({{.OutputType}}, error)
+    {{- if .Body -}}
+    {{- .Body -}}
+    {{- else -}}
+    {
     {{- if eq .InnerInputType .OutputType}}
     return val, nil
     {{- else}}
     panic("not implemented")
     {{- end}}
+    }
     {{- end}}
-}
 {{end}}

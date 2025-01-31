@@ -19,7 +19,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
         {{- range .Conversions}}
         if d.GetKey() == protos.Field_{{.TeslaField}} {
             if v, ok := d.GetValue().Value.(*protos.{{.WrapperName}}); ok {
-                val, err := Convert{{.TeslaField}}To{{.GoVSSSignalName}}Outer(v.{{.WrapperFieldName}})
+                val, err := Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}Outer(v.{{.WrapperFieldName}})
                 if err != nil {
                     outErr = append(outErr, err)
                 } else {
@@ -41,7 +41,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 }
 
 {{range .Conversions}}
-func Convert{{.TeslaField}}To{{.GoVSSSignalName}}Outer(wrap {{.OuterInputType}}) ({{.OutputType}}, error) {
+func Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}Outer(wrap {{.OuterInputType}}) ({{.OutputType}}, error) {
     {{- if .ParseFloat}}
     fp, err := strconv.ParseFloat(wrap, 64)
     if err != nil {
@@ -51,9 +51,9 @@ func Convert{{.TeslaField}}To{{.GoVSSSignalName}}Outer(wrap {{.OuterInputType}})
     {{if .UnitFunc}}
     fp = unit.{{.UnitFunc}}(fp)
     {{end}}
-    return Convert{{.TeslaField}}To{{.GoVSSSignalName}}Inner(fp)
+    return Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}Inner(fp)
     {{- else}}
-    return Convert{{.TeslaField}}To{{.GoVSSSignalName}}Inner(wrap)
+    return Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}Inner(wrap)
     {{- end}}
 }
 {{end}}
