@@ -9,12 +9,12 @@ import (
 	"go/parser"
 	"go/printer"
 	"go/token"
-	"html/template"
 	"io"
 	"log"
 	"os"
 	"slices"
 	"strings"
+	"text/template"
 
 	"github.com/DIMO-Network/model-garage/pkg/schema"
 	"github.com/teslamotors/fleet-telemetry/protos"
