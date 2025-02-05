@@ -18,6 +18,7 @@ import (
 
 	"github.com/DIMO-Network/model-garage/pkg/schema"
 	"github.com/teslamotors/fleet-telemetry/protos"
+	"google.golang.org/protobuf/reflect/protoreflect"
 	"gopkg.in/yaml.v3"
 )
 
@@ -45,6 +46,25 @@ var innerTmpl string
 //go:embed outer.tmpl
 var outerTmpl string
 
+var protoToGoTypes = map[string]string{
+	"string": "string",
+	"int32":  "int32",
+	"int64":  "int64",
+	"float":  "float32",
+	"double": "float64",
+	"bool":   "bool",
+}
+
+func snakeToPascal(s string) string {
+	words := strings.Split(s, "_")
+	for i, w := range words {
+		if len(w) != 0 {
+			words[i] = strings.ToUpper(w[:1]) + w[1:]
+		}
+	}
+	return strings.Join(words, "")
+}
+
 func Generate(packageName, rulesPath, outerOutputPath, innerOutputPath string) error {
 	signalInfos, err := schema.LoadSignalsCSV(strings.NewReader(schema.VssRel42DIMO()))
 	if err != nil {
@@ -63,6 +83,43 @@ func Generate(packageName, rulesPath, outerOutputPath, innerOutputPath string) e
 
 	tmplInput := &TemplateInput{
 		Package: packageName,
+	}
+
+	teslaTypeToAttributes := make(map[string]TeslaTypeDescription)
+
+	desc := (&protos.Value{}).ProtoReflect().Descriptor()
+	for i := range desc.Fields().Len() {
+		field := desc.Fields().Get(i)
+		fieldName := field.Name()
+
+		teslaWrapperFieldName := snakeToPascal(string(fieldName))
+		teslaWrapperType := "Value_" + teslaWrapperFieldName
+		var protoType, valueType string
+		switch field.Kind() {
+		case protoreflect.MessageKind:
+			protoType = string(field.Message().Name())
+			valueType = "*protos." + protoType
+		case protoreflect.EnumKind:
+			protoType = string(field.Enum().Name())
+			valueType = "protos." + protoType
+		default:
+			// Primitive types.
+			protoType = field.Kind().String()
+			goType, ok := protoToGoTypes[protoType]
+			if !ok {
+				return fmt.Errorf("no Go mapping for protobuf type %s", protoType)
+			}
+			valueType = goType
+		}
+
+		niceName := strings.ToUpper(protoType[:1]) + protoType[1:]
+
+		teslaTypeToAttributes[protoType] = TeslaTypeDescription{
+			TeslaWrapperType:      teslaWrapperType,
+			TeslaWrapperFieldName: teslaWrapperFieldName,
+			ValueType:             valueType,
+			NiceName:              niceName,
+		}
 	}
 
 	for _, r := range rules {
@@ -206,8 +263,6 @@ func writeInner(tmplInput *TemplateInput, innerPath string) error {
 		panic(err)
 	}
 
-	fmt.Println(string(buf.Bytes()))
-
 	out, err := format.Source(buf.Bytes())
 	if err != nil {
 		panic(err)
@@ -291,19 +346,4 @@ type TeslaTypeDescription struct {
 	TeslaWrapperFieldName string
 	ValueType             string
 	NiceName              string
-}
-
-var teslaTypeToAttributes = map[string]TeslaTypeDescription{
-	"string": {
-		TeslaWrapperType:      "Value_StringValue",
-		TeslaWrapperFieldName: "StringValue",
-		ValueType:             "string",
-		NiceName:              "String",
-	},
-	"LocationValue": {
-		TeslaWrapperType:      "Value_LocationValue",
-		TeslaWrapperFieldName: "LocationValue",
-		ValueType:             "*protos.LocationValue",
-		NiceName:              "LocationValue",
-	},
 }
