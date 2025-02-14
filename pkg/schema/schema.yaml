@@ -113,3 +113,44 @@
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
+
+- teslaField: BrickVoltageMax
+  teslaType: string
+  teslaUnit: V
+  vssSignal: Vehicle.Powertrain.CellVoltage.Max
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+# Still TODO:
+# BrickVoltageMin
+# CarType
+# ChargeAmps
+# CruiseFollowDistance
+# CruiseSetSpeed
+# CurrentLimitMph
+# EmergencyLaneDepartureAvoidance
+# ForwardCollisionWarning
+# GuestModeEnabled
+# IdealBatteryRange
+# LaneDepartureAvoidance
+# Locked
+# TpmsLastSeenPressureTimeFl
+# TpmsLastSeenPressureTimeFr
+# TpmsLastSeenPressureTimeRl
+# TpmsLastSeenPressureTimeRr
+# Trim
+# VehicleName
+# Version
+# FastChargerPresent
+# DoorState
+# FdWindow
+# FpWindow
+# RdWindow
+# RpWindow
+# BlindSpotCollisionWarningChime
+# SpeedLimitWarning
+# AutomaticEmergencyBrakingOff
+# ChargerVoltage
+# ChargingCableType
+# SoftwareUpdateVersion
