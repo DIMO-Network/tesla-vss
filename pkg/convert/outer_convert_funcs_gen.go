@@ -67,74 +67,6 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 				}
 			}
 		}
-		if d.GetKey() == protos.Field_ACChargingPower {
-			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(v.StringValue)
-				if err != nil {
-					outErr = append(outErr, err)
-				} else {
-					sig := vss.Signal{
-						TokenID:   tokenID,
-						Name:      "powertrainTractionBatteryCurrentPower",
-						Timestamp: ts,
-						Source:    source,
-					}
-					sig.SetValue(val)
-					out = append(out, sig)
-				}
-			}
-		}
-		if d.GetKey() == protos.Field_DCChargingPower {
-			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(v.StringValue)
-				if err != nil {
-					outErr = append(outErr, err)
-				} else {
-					sig := vss.Signal{
-						TokenID:   tokenID,
-						Name:      "powertrainTractionBatteryCurrentPower",
-						Timestamp: ts,
-						Source:    source,
-					}
-					sig.SetValue(val)
-					out = append(out, sig)
-				}
-			}
-		}
-		if d.GetKey() == protos.Field_ACChargingEnergyIn {
-			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(v.StringValue)
-				if err != nil {
-					outErr = append(outErr, err)
-				} else {
-					sig := vss.Signal{
-						TokenID:   tokenID,
-						Name:      "powertrainTractionBatteryChargingAddedEnergy",
-						Timestamp: ts,
-						Source:    source,
-					}
-					sig.SetValue(val)
-					out = append(out, sig)
-				}
-			}
-		}
-		if d.GetKey() == protos.Field_DCChargingEnergyIn {
-			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(v.StringValue)
-				if err != nil {
-					outErr = append(outErr, err)
-				} else {
-					sig := vss.Signal{
-						TokenID:   tokenID,
-						Name:      "powertrainTractionBatteryChargingAddedEnergy",
-						Timestamp: ts,
-						Source:    source,
-					}
-					sig.SetValue(val)
-					out = append(out, sig)
-				}
-			}
-		}
 		if d.GetKey() == protos.Field_Soc {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
 				val, err := ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentWrapper(v.StringValue)
@@ -303,50 +235,6 @@ func ConvertLocationLocationValueToCurrentLocationLongitudeWrapper(wrap *protos.
 
 func ConvertDetailedChargeStateDetailedChargeStateValueToPowertrainTractionBatteryChargingIsChargingWrapper(wrap protos.DetailedChargeStateValue) (float64, error) {
 	return ConvertDetailedChargeStateDetailedChargeStateValueToPowertrainTractionBatteryChargingIsCharging(wrap)
-}
-
-func ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(wrap string) (float64, error) {
-	fp, err := strconv.ParseFloat(wrap, 64)
-	if err != nil {
-		var tmpOut float64
-		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
-	}
-
-	fp = unit.KilowattsToWatts(fp)
-
-	return ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPower(fp)
-}
-
-func ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(wrap string) (float64, error) {
-	fp, err := strconv.ParseFloat(wrap, 64)
-	if err != nil {
-		var tmpOut float64
-		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
-	}
-
-	fp = unit.KilowattsToWatts(fp)
-
-	return ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPower(fp)
-}
-
-func ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(wrap string) (float64, error) {
-	fp, err := strconv.ParseFloat(wrap, 64)
-	if err != nil {
-		var tmpOut float64
-		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
-	}
-
-	return ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergy(fp)
-}
-
-func ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(wrap string) (float64, error) {
-	fp, err := strconv.ParseFloat(wrap, 64)
-	if err != nil {
-		var tmpOut float64
-		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
-	}
-
-	return ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergy(fp)
 }
 
 func ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentWrapper(wrap string) (float64, error) {

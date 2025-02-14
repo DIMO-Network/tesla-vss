@@ -22,22 +22,6 @@ func ConvertDetailedChargeStateDetailedChargeStateValueToPowertrainTractionBatte
 	}
 }
 
-func ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPower(val float64) (float64, error) {
-	return val, nil
-}
-
-func ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPower(val float64) (float64, error) {
-	return val, nil
-}
-
-func ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergy(val float64) (float64, error) {
-	return val, nil
-}
-
-func ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergy(val float64) (float64, error) {
-	return val, nil
-}
-
 func ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrent(val float64) (float64, error) {
 	return val, nil
 }

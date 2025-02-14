@@ -10,37 +10,37 @@
   teslaType: DetailedChargeStateValue
   vssSignal: Vehicle.Powertrain.TractionBattery.Charging.IsCharging
 
-- teslaField: ACChargingPower
-  teslaType: string
-  teslaUnit: kW
-  vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower # Happily, in VSS this is positive for charging.
-  automations:
-  - PARSE_FLOAT
-  - CONVERT_UNIT
+# - teslaField: ACChargingPower
+#   teslaType: string
+#   teslaUnit: kW
+#   vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower # Happily, in VSS this is positive for charging.
+#   automations:
+#   - PARSE_FLOAT
+#   - CONVERT_UNIT
 
-- teslaField: DCChargingPower
-  teslaType: string
-  teslaUnit: kW
-  vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower
-  automations:
-  - PARSE_FLOAT
-  - CONVERT_UNIT
+# - teslaField: DCChargingPower
+#   teslaType: string
+#   teslaUnit: kW
+#   vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower
+#   automations:
+#   - PARSE_FLOAT
+#   - CONVERT_UNIT
 
-- teslaField: ACChargingEnergyIn
-  teslaType: string
-  teslaUnit: kWh
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
-  automations:
-  - PARSE_FLOAT
-  - CONVERT_UNIT
+# - teslaField: ACChargingEnergyIn
+#   teslaType: string
+#   teslaUnit: kWh
+#   vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
+#   automations:
+#   - PARSE_FLOAT
+#   - CONVERT_UNIT
 
-- teslaField: DCChargingEnergyIn
-  teslaType: string
-  teslaUnit: kWh
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
-  automations:
-  - PARSE_FLOAT
-  - CONVERT_UNIT
+# - teslaField: DCChargingEnergyIn
+#   teslaType: string
+#   teslaUnit: kWh
+#   vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
+#   automations:
+#   - PARSE_FLOAT
+#   - CONVERT_UNIT
 
 - teslaField: Soc
   teslaType: string

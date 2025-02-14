@@ -246,7 +246,7 @@ func writeInner(tmplInput *TemplateInput, innerPath string) error {
 	}
 
 	for _, conv := range tmplInput.Conversions {
-		name := fmt.Sprintf("Convert%s%sTo%sInner", conv.TeslaField, conv.TeslaTypeName, conv.GoVSSSignalName)
+		name := fmt.Sprintf("Convert%s%sTo%s", conv.TeslaField, conv.TeslaTypeName, conv.GoVSSSignalName)
 		if body, ok := existingBodies[name]; ok {
 			conv.Body = body
 		}
