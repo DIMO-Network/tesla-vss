@@ -18,7 +18,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 	for _, d := range payload.GetData() {
 		if d.GetKey() == protos.Field_Location {
 			if v, ok := d.GetValue().Value.(*protos.Value_LocationValue); ok {
-				val, err := ConvertLocationLocationValueToCurrentLocationLatitudeOuter(v.LocationValue)
+				val, err := ConvertLocationLocationValueToCurrentLocationLatitudeWrapper(v.LocationValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -35,7 +35,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_Location {
 			if v, ok := d.GetValue().Value.(*protos.Value_LocationValue); ok {
-				val, err := ConvertLocationLocationValueToCurrentLocationLongitudeOuter(v.LocationValue)
+				val, err := ConvertLocationLocationValueToCurrentLocationLongitudeWrapper(v.LocationValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -50,26 +50,9 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 				}
 			}
 		}
-		if d.GetKey() == protos.Field_ACChargingPower {
-			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerOuter(v.StringValue)
-				if err != nil {
-					outErr = append(outErr, err)
-				} else {
-					sig := vss.Signal{
-						TokenID:   tokenID,
-						Name:      "powertrainTractionBatteryCurrentPower",
-						Timestamp: ts,
-						Source:    source,
-					}
-					sig.SetValue(val)
-					out = append(out, sig)
-				}
-			}
-		}
-		if d.GetKey() == protos.Field_ACChargingPower {
-			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertACChargingPowerStringToPowertrainTractionBatteryChargingIsChargingOuter(v.StringValue)
+		if d.GetKey() == protos.Field_DetailedChargeState {
+			if v, ok := d.GetValue().Value.(*protos.Value_DetailedChargeStateValue); ok {
+				val, err := ConvertDetailedChargeStateDetailedChargeStateValueToPowertrainTractionBatteryChargingIsChargingWrapper(v.DetailedChargeStateValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -84,9 +67,9 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 				}
 			}
 		}
-		if d.GetKey() == protos.Field_DCChargingPower {
+		if d.GetKey() == protos.Field_ACChargingPower {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerOuter(v.StringValue)
+				val, err := ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -103,13 +86,13 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_DCChargingPower {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertDCChargingPowerStringToPowertrainTractionBatteryChargingIsChargingOuter(v.StringValue)
+				val, err := ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
 					sig := vss.Signal{
 						TokenID:   tokenID,
-						Name:      "powertrainTractionBatteryChargingIsCharging",
+						Name:      "powertrainTractionBatteryCurrentPower",
 						Timestamp: ts,
 						Source:    source,
 					}
@@ -120,7 +103,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_ACChargingEnergyIn {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyOuter(v.StringValue)
+				val, err := ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -137,7 +120,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_DCChargingEnergyIn {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyOuter(v.StringValue)
+				val, err := ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -154,7 +137,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_Soc {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentOuter(v.StringValue)
+				val, err := ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -171,7 +154,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_TpmsPressureFl {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressureOuter(v.StringValue)
+				val, err := ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressureWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -188,7 +171,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_TpmsPressureFr {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressureOuter(v.StringValue)
+				val, err := ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressureWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -205,7 +188,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_TpmsPressureRl {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressureOuter(v.StringValue)
+				val, err := ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressureWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -222,7 +205,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_TpmsPressureRr {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressureOuter(v.StringValue)
+				val, err := ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressureWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -239,7 +222,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_OutsideTemp {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertOutsideTempStringToExteriorAirTemperatureOuter(v.StringValue)
+				val, err := ConvertOutsideTempStringToExteriorAirTemperatureWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -256,7 +239,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_EstBatteryRange {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertEstBatteryRangeStringToPowertrainRangeOuter(v.StringValue)
+				val, err := ConvertEstBatteryRangeStringToPowertrainRangeWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -273,7 +256,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_ChargeLimitSoc {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimitOuter(v.StringValue)
+				val, err := ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimitWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -290,7 +273,7 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 		}
 		if d.GetKey() == protos.Field_VehicleSpeed {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
-				val, err := ConvertVehicleSpeedStringToSpeedOuter(v.StringValue)
+				val, err := ConvertVehicleSpeedStringToSpeedWrapper(v.StringValue)
 				if err != nil {
 					outErr = append(outErr, err)
 				} else {
@@ -310,15 +293,19 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 	return out, outErr
 }
 
-func ConvertLocationLocationValueToCurrentLocationLatitudeOuter(wrap *protos.LocationValue) (float64, error) {
-	return ConvertLocationLocationValueToCurrentLocationLatitudeInner(wrap)
+func ConvertLocationLocationValueToCurrentLocationLatitudeWrapper(wrap *protos.LocationValue) (float64, error) {
+	return ConvertLocationLocationValueToCurrentLocationLatitude(wrap)
 }
 
-func ConvertLocationLocationValueToCurrentLocationLongitudeOuter(wrap *protos.LocationValue) (float64, error) {
-	return ConvertLocationLocationValueToCurrentLocationLongitudeInner(wrap)
+func ConvertLocationLocationValueToCurrentLocationLongitudeWrapper(wrap *protos.LocationValue) (float64, error) {
+	return ConvertLocationLocationValueToCurrentLocationLongitude(wrap)
 }
 
-func ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerOuter(wrap string) (float64, error) {
+func ConvertDetailedChargeStateDetailedChargeStateValueToPowertrainTractionBatteryChargingIsChargingWrapper(wrap protos.DetailedChargeStateValue) (float64, error) {
+	return ConvertDetailedChargeStateDetailedChargeStateValueToPowertrainTractionBatteryChargingIsCharging(wrap)
+}
+
+func ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
@@ -327,20 +314,10 @@ func ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerOuter(wr
 
 	fp = unit.KilowattsToWatts(fp)
 
-	return ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPowerInner(fp)
+	return ConvertACChargingPowerStringToPowertrainTractionBatteryCurrentPower(fp)
 }
 
-func ConvertACChargingPowerStringToPowertrainTractionBatteryChargingIsChargingOuter(wrap string) (float64, error) {
-	fp, err := strconv.ParseFloat(wrap, 64)
-	if err != nil {
-		var tmpOut float64
-		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
-	}
-
-	return ConvertACChargingPowerStringToPowertrainTractionBatteryChargingIsChargingInner(fp)
-}
-
-func ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerOuter(wrap string) (float64, error) {
+func ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
@@ -349,50 +326,40 @@ func ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerOuter(wr
 
 	fp = unit.KilowattsToWatts(fp)
 
-	return ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPowerInner(fp)
+	return ConvertDCChargingPowerStringToPowertrainTractionBatteryCurrentPower(fp)
 }
 
-func ConvertDCChargingPowerStringToPowertrainTractionBatteryChargingIsChargingOuter(wrap string) (float64, error) {
+func ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
 		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
 	}
 
-	return ConvertDCChargingPowerStringToPowertrainTractionBatteryChargingIsChargingInner(fp)
+	return ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergy(fp)
 }
 
-func ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyOuter(wrap string) (float64, error) {
+func ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
 		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
 	}
 
-	return ConvertACChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyInner(fp)
+	return ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergy(fp)
 }
 
-func ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyOuter(wrap string) (float64, error) {
+func ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
 		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
 	}
 
-	return ConvertDCChargingEnergyInStringToPowertrainTractionBatteryChargingAddedEnergyInner(fp)
+	return ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrent(fp)
 }
 
-func ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentOuter(wrap string) (float64, error) {
-	fp, err := strconv.ParseFloat(wrap, 64)
-	if err != nil {
-		var tmpOut float64
-		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
-	}
-
-	return ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrentInner(fp)
-}
-
-func ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressureOuter(wrap string) (float64, error) {
+func ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressureWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
@@ -401,10 +368,10 @@ func ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressureOuter(wrap
 
 	fp = unit.BarsToKilopascals(fp)
 
-	return ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressureInner(fp)
+	return ConvertTpmsPressureFlStringToChassisAxleRow1WheelLeftTirePressure(fp)
 }
 
-func ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressureOuter(wrap string) (float64, error) {
+func ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressureWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
@@ -413,10 +380,10 @@ func ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressureOuter(wra
 
 	fp = unit.BarsToKilopascals(fp)
 
-	return ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressureInner(fp)
+	return ConvertTpmsPressureFrStringToChassisAxleRow1WheelRightTirePressure(fp)
 }
 
-func ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressureOuter(wrap string) (float64, error) {
+func ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressureWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
@@ -425,10 +392,10 @@ func ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressureOuter(wrap
 
 	fp = unit.BarsToKilopascals(fp)
 
-	return ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressureInner(fp)
+	return ConvertTpmsPressureRlStringToChassisAxleRow2WheelLeftTirePressure(fp)
 }
 
-func ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressureOuter(wrap string) (float64, error) {
+func ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressureWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
@@ -437,40 +404,40 @@ func ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressureOuter(wra
 
 	fp = unit.BarsToKilopascals(fp)
 
-	return ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressureInner(fp)
+	return ConvertTpmsPressureRrStringToChassisAxleRow2WheelRightTirePressure(fp)
 }
 
-func ConvertOutsideTempStringToExteriorAirTemperatureOuter(wrap string) (float64, error) {
+func ConvertOutsideTempStringToExteriorAirTemperatureWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
 		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
 	}
 
-	return ConvertOutsideTempStringToExteriorAirTemperatureInner(fp)
+	return ConvertOutsideTempStringToExteriorAirTemperature(fp)
 }
 
-func ConvertEstBatteryRangeStringToPowertrainRangeOuter(wrap string) (float64, error) {
+func ConvertEstBatteryRangeStringToPowertrainRangeWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
 		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
 	}
 
-	return ConvertEstBatteryRangeStringToPowertrainRangeInner(fp)
+	return ConvertEstBatteryRangeStringToPowertrainRange(fp)
 }
 
-func ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimitOuter(wrap string) (float64, error) {
+func ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimitWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
 		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
 	}
 
-	return ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimitInner(fp)
+	return ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimit(fp)
 }
 
-func ConvertVehicleSpeedStringToSpeedOuter(wrap string) (float64, error) {
+func ConvertVehicleSpeedStringToSpeedWrapper(wrap string) (float64, error) {
 	fp, err := strconv.ParseFloat(wrap, 64)
 	if err != nil {
 		var tmpOut float64
@@ -479,5 +446,5 @@ func ConvertVehicleSpeedStringToSpeedOuter(wrap string) (float64, error) {
 
 	fp = unit.MilesPerHourToKilometersPerHour(fp)
 
-	return ConvertVehicleSpeedStringToSpeedInner(fp)
+	return ConvertVehicleSpeedStringToSpeed(fp)
 }

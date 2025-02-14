@@ -6,7 +6,7 @@ import (
 )
 
 {{range .Conversions}}
-func Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}Inner(val {{.InnerInputType}}) ({{.OutputType}}, error)
+func Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}(val {{.InnerInputType}}) ({{.OutputType}}, error)
     {{- if .Body -}}
     {{- .Body -}}
     {{- else -}}
