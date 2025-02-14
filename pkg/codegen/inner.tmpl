@@ -6,6 +6,7 @@ import (
 )
 
 {{range .Conversions}}
+// Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}} converts a telemetry datum with key {{.TeslaField}} to the VSS signal {{.GoVSSSignalName}}.
 func Convert{{.TeslaField}}{{.TeslaTypeName}}To{{.GoVSSSignalName}}(val {{.InnerInputType}}) ({{.OutputType}}, error)
     {{- if .Body -}}
     {{- .Body -}}
