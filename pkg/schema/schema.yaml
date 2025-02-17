@@ -10,37 +10,41 @@
   teslaType: DetailedChargeStateValue
   vssSignal: Vehicle.Powertrain.TractionBattery.Charging.IsCharging
 
-# - teslaField: ACChargingPower
-#   teslaType: string
-#   teslaUnit: kW
-#   vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower # Happily, in VSS this is positive for charging.
-#   automations:
-#   - PARSE_FLOAT
-#   - CONVERT_UNIT
+- teslaField: ACChargingPower
+  teslaType: string
+  teslaUnit: kW
+  vssSignal: Vehicle.Powertrain.TractionBattery.ACCurrentPower # Happily, in VSS this is positive for charging.
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+  # split VSS signal into AC and DC
 
-# - teslaField: DCChargingPower
-#   teslaType: string
-#   teslaUnit: kW
-#   vssSignal: Vehicle.Powertrain.TractionBattery.CurrentPower
-#   automations:
-#   - PARSE_FLOAT
-#   - CONVERT_UNIT
+- teslaField: DCChargingPower
+  teslaType: string
+  teslaUnit: kW
+  vssSignal: Vehicle.Powertrain.TractionBattery.DCCurrentPower
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+  # split VSS signal into AC and DC
 
-# - teslaField: ACChargingEnergyIn
-#   teslaType: string
-#   teslaUnit: kWh
-#   vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
-#   automations:
-#   - PARSE_FLOAT
-#   - CONVERT_UNIT
+- teslaField: ACChargingEnergyIn
+  teslaType: string
+  teslaUnit: kWh
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ACAddedEnergy
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+ # split VSS signal into AC and DC
 
-# - teslaField: DCChargingEnergyIn
-#   teslaType: string
-#   teslaUnit: kWh
-#   vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
-#   automations:
-#   - PARSE_FLOAT
-#   - CONVERT_UNIT
+- teslaField: DCChargingEnergyIn
+  teslaType: string
+  teslaUnit: kWh
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.DCAddedEnergy
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+ # split VSS signal into AC and DC
 
 - teslaField: Soc
   teslaType: string
@@ -117,23 +121,111 @@
 - teslaField: BrickVoltageMax
   teslaType: string
   teslaUnit: V
-  vssSignal: Vehicle.Powertrain.CellVoltage.Max
+  vssSignal: Vehicle.Powertrain.TractionBattery.CellVoltage.Max
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
 
+- teslaField: BrickVoltageMin
+  teslaType: string
+  teslaUnit: V
+  vssSignal: Vehicle.Powertrain.TractionBattery.CellVoltage.Min
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: CarType
+  teslaType: string
+  vssSignal: Vehicle.VehicleIdentification.Model 
+  # "_Vehicle_..." Per https://github.com/COVESA/vehicle_signal_specification/blob/6024c4b29065b37c074649a1a65396b9d4de9b55/spec/VehicleSignalSpecification.vspec#L27
+
+- teslaField: ChargeAmps
+  teslaType: string
+  teslaUnit: A
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ChargeCurrent.AllPhases 
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+  #Jeremy invented signal because current is not given in phases. Note that this signal appears to only track amps for AC charging, not supercharging (the max observed is 48 Amps, but a supercharge should be over 400 amps)
+
+
+- teslaField: CruiseFollowDistance
+  teslaType: string
+  vssSignal: Vehicle.ADAS.CruiseControl.CruiseFollowTime 
+  automations:
+  - PARSE_FLOAT
+  # Tesla cruise follow distance seems to be directly proportional to time, but is not seconds
+
+- teslaField: CruiseSetSpeed
+  teslaType: string
+  teslaUnit: kph
+  vssSignal: Vehicle.ADAS.CruiseControl.SpeedSet 
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+# Jeremy is 99% sure that the Tesla signal is in kph, where speed is in mph, which is unpleasant if true
+
+- teslaField: CurrentLimitMph
+  teslaType: string
+  teslaUnit: mph
+  vssSignal: Vehicle.VehicleIdentification.Model.MaxSpeedAllowed 
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+# Jeremy invented this signal because "speed limit mode" does not appear to be a VSS signal
+
+- teslaField: EmergencyLaneDepartureAvoidance
+  teslaType: string
+  vssSignal: Vehicle.ADAS.LaneDepartureDetection.IsEnabled
+  automations:
+  - PARSE_BOOLEAN
+
+- teslaField: ForwardCollisionWarning
+  teslaType: string
+  vssSignal: Vehicle.ADAS.ObstacleDetection.IsWarning
+
+- teslaField: GuestModeEnabled
+  teslaType: string
+  vssSignal: Vehicle.GuestModeEnabled 
+  automations:
+  - PARSE_BOOLEAN
+  # Jeremy invented this signal because guest mode is pretty Tesla specific
+
+- teslaField: IdealBatteryRange
+  teslaType: string
+  teslaUnit: mi
+  vssSignal: Vehicle.Powertrain.IdealRange
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+  # Jeremy invented this signal
+
+- teslaField: Odometer
+  teslaType: string
+  teslaUnit: mi
+  vssSignal: Vehicle.Powertrain.Transmission.TravelledDistance
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+# Jeremy used powertrain odometer instead of vehicle odometer because DIMO has been using powertrain odometer
+
+- teslaField: EnergyRemaining
+  teslaType: string
+  teslaUnit: kwh
+  vssSignal: Vehicle.Powertrain.TractionBattery.StateOfCharge.CurrentEnergy
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
+- teslaField: LaneDepartureAvoidance
+  teslaType: string
+  vssSignal: Vehicle.ADAS.LaneDepartureDetection.Level
+  automations:
+  - CONVERT_UNIT
+  # Jeremy invented this signal
+  
+
 # Still TODO:
-# BrickVoltageMin
-# CarType
-# ChargeAmps
-# CruiseFollowDistance
-# CruiseSetSpeed
-# CurrentLimitMph
-# EmergencyLaneDepartureAvoidance
-# ForwardCollisionWarning
-# GuestModeEnabled
-# IdealBatteryRange
-# LaneDepartureAvoidance
 # Locked
 # TpmsLastSeenPressureTimeFl
 # TpmsLastSeenPressureTimeFr
