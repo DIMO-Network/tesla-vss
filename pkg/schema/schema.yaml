@@ -223,19 +223,107 @@
   automations:
   - CONVERT_UNIT
   # Jeremy invented this signal
-  
+
+# Parse the Tesla Locked signal into all four door IsLocked VSS signals
+- teslaField: Locked
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.DriverSide.IsLocked
+  automations:
+  - PARSE_BOOLEAN
+
+- teslaField: Locked
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.DriverSide.IsLocked
+  automations:
+  - PARSE_BOOLEAN
+
+- teslaField: Locked
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.PassengerSide.IsLocked
+  automations:
+  - PARSE_BOOLEAN
+
+- teslaField: Locked
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.PassengerSide.IsLocked
+  automations:
+  - PARSE_BOOLEAN
+# </Four door signals>
+
+# Remove these because we have the timestamp associated with each pressure reading
+# - teslaField: TpmsLastSeenPressureTimeFl
+#   teslaType: string
+#   teslaUnit: timestamp
+#   vssSignal: Vehicle.Chassis.Axle.Row1.Wheel.Left.Tire.PressureTimestamp
+#   automations:
+#   - PARSE_TIMESTAMP
+#   - CONVERT_UNIT
+
+# - teslaField: TpmsLastSeenPressureTimeFr
+#   teslaType: string
+#   teslaUnit: timestamp
+#   vssSignal: Vehicle.Chassis.Axle.Row1.Wheel.Right.Tire.PressureTimestamp
+#   automations:
+#   - PARSE_TIMESTAMP
+#   - CONVERT_UNIT
+
+# - teslaField: TpmsLastSeenPressureTimeRl
+#   teslaType: string
+#   teslaUnit: timestamp
+#   vssSignal: Vehicle.Chassis.Axle.Row2.Wheel.Left.Tire.PressureTimestamp
+#   automations:
+#   - PARSE_TIMESTAMP
+#   - CONVERT_UNIT
+
+# - teslaField: TpmsLastSeenPressureTimeRr
+#   teslaType: string
+#   teslaUnit: timestamp
+#   vssSignal: Vehicle.Chassis.Axle.Row2.Wheel.Right.Tire.PressureTimestamp
+#   automations:
+#   - PARSE_TIMESTAMP
+#   - CONVERT_UNIT
+
+- teslaField: Trim
+  teslaType: string
+  vssSignal: Vehicle.VehicleIdentification.Trim
+  # Jeremy invented this signal
+
+- teslaField: VehicleName
+  teslaType: string
+  vssSignal: Vehicle.VehicleIdentification.VehicleName
+  # Jeremy invented this signal
+
+- teslaField: Version
+  teslaType: string
+  vssSignal: Vehicle.VehicleIdentification.VehicleSoftwareVersion
+  # Jeremy invented this signal
+
+- teslaField: FastChargerPresent
+  teslaType: string
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.IsFastChargingCableConnected
+  automations:
+  - PARSE_BOOL
+  # Jeremy invented this signal (based on `Charging.IsChargingCableConnected`)
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.DriverSide.IsOpen
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.DriverSide.IsOpen
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.PassengerSide.IsOpen
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.PassengerSide.IsOpen
+
+
 
 # Still TODO:
-# Locked
-# TpmsLastSeenPressureTimeFl
-# TpmsLastSeenPressureTimeFr
-# TpmsLastSeenPressureTimeRl
-# TpmsLastSeenPressureTimeRr
-# Trim
-# VehicleName
-# Version
-# FastChargerPresent
-# DoorState
 # FdWindow
 # FpWindow
 # RdWindow
