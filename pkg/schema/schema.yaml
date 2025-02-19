@@ -182,7 +182,9 @@
 
 - teslaField: ForwardCollisionWarning
   teslaType: string
-  vssSignal: Vehicle.ADAS.ObstacleDetection.IsWarning
+  vssSignal: Vehicle.ADAS.ObstacleDetection.Forward.Setting
+# This is the sensitivity setting for the forward collision warning
+# Split out Vehicle.ADAS.ObstacleDetection into forward and blind spot
 
 - teslaField: GuestModeEnabled
   teslaType: string
@@ -211,7 +213,7 @@
 
 - teslaField: EnergyRemaining
   teslaType: string
-  teslaUnit: kwh
+  teslaUnit: kWh
   vssSignal: Vehicle.Powertrain.TractionBattery.StateOfCharge.CurrentEnergy
   automations:
   - PARSE_FLOAT
@@ -321,16 +323,52 @@
   teslaType: string
   vssSignal: Vehicle.Cabin.Door.Row2.PassengerSide.IsOpen
 
+# Is item open or closed? True = Fully or partially open. False = Fully closed.	 (Map Tesla fields to True/False)
+- teslaField: FdWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.DriverSide.Window.IsOpen
 
+- teslaField: FpWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.PassengerSide.Window.IsOpen
 
-# Still TODO:
-# FdWindow
-# FpWindow
-# RdWindow
-# RpWindow
-# BlindSpotCollisionWarningChime
-# SpeedLimitWarning
-# AutomaticEmergencyBrakingOff
-# ChargerVoltage
-# ChargingCableType
-# SoftwareUpdateVersion
+- teslaField: RdWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.DriverSide.Window.IsOpen
+
+- teslaField: RpWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.PassengerSide.Window.IsOpen
+
+- teslaField: BlindSpotCollisionWarningChime
+  teslaType: string
+  vssSignal: Vehicle.ADAS.ObstacleDetection.BlindSpot.IsEnabled
+  automations:
+  - PARSE_BOOL
+# Split out Vehicle.ADAS.ObstacleDetection into forward and blind spot
+
+- teslaField: SpeedLimitWarning
+  teslaType: string
+  vssSignal: Vehicle.ADAS.SpeedLimitWarning
+
+- teslaField: AutomaticEmergencyBrakingOff
+  teslaType: string
+  vssSignal: Vehicle.ADAS.EBA.IsEnabled
+  automations:
+  - PARSE_BOOL
+
+- teslaField: ChargerVoltage
+  teslaType: doubleValue
+  teslaUnit: V
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ChargeVoltage
+  automations: 
+  - CONVERT_UNIT
+
+- teslaField: ChargingCableType
+  teslaType: ChargingCableTypeValue
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ChargePortType
+
+- teslaField: SoftwareUpdateVersion
+  teslaType: string
+  vssSignal: Vehicle.VehicleIdentification.VehicleSoftwareUpdateVersion
+# Jeremy invtented this signal
