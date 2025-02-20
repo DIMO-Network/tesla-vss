@@ -13,7 +13,7 @@
 - teslaField: ACChargingPower
   teslaType: string
   teslaUnit: kW
-  vssSignal: Vehicle.Powertrain.TractionBattery.ACCurrentPower # Happily, in VSS this is positive for charging.
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.CurrentPower.AC
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
@@ -22,7 +22,7 @@
 - teslaField: DCChargingPower
   teslaType: string
   teslaUnit: kW
-  vssSignal: Vehicle.Powertrain.TractionBattery.DCCurrentPower
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.CurrentPower.DC
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
@@ -31,7 +31,7 @@
 - teslaField: ACChargingEnergyIn
   teslaType: string
   teslaUnit: kWh
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ACAddedEnergy
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy.AC
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
@@ -40,7 +40,7 @@
 - teslaField: DCChargingEnergyIn
   teslaType: string
   teslaUnit: kWh
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.DCAddedEnergy
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy.DC
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
@@ -137,7 +137,6 @@
 - teslaField: CarType
   teslaType: string
   vssSignal: Vehicle.VehicleIdentification.Model 
-  # "_Vehicle_..." Per https://github.com/COVESA/vehicle_signal_specification/blob/6024c4b29065b37c074649a1a65396b9d4de9b55/spec/VehicleSignalSpecification.vspec#L27
 
 - teslaField: ChargeAmps
   teslaType: string
@@ -158,7 +157,7 @@
 
 - teslaField: CruiseSetSpeed
   teslaType: string
-  teslaUnit: kph
+  teslaUnit: km/h
   vssSignal: Vehicle.ADAS.CruiseControl.SpeedSet 
   automations:
   - PARSE_FLOAT
@@ -222,9 +221,7 @@
 - teslaField: LaneDepartureAvoidance
   teslaType: string
   vssSignal: Vehicle.ADAS.LaneDepartureDetection.Level
-  automations:
-  - CONVERT_UNIT
-  # Jeremy invented this signal
+# Jeremy invented this signal
 
 # Parse the Tesla Locked signal into all four door IsLocked VSS signals
 - teslaField: Locked
@@ -350,6 +347,7 @@
 - teslaField: SpeedLimitWarning
   teslaType: string
   vssSignal: Vehicle.ADAS.SpeedLimitWarning
+  # Jeremy invented this signal
 
 - teslaField: AutomaticEmergencyBrakingOff
   teslaType: string
@@ -360,9 +358,10 @@
 - teslaField: ChargerVoltage
   teslaType: doubleValue
   teslaUnit: V
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ChargeVoltage
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.ChargeVoltage.ChargeVoltage
   automations: 
   - CONVERT_UNIT
+  - PARSE_FLOAT
 
 - teslaField: ChargingCableType
   teslaType: ChargingCableTypeValue
