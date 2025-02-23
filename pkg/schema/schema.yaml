@@ -42,6 +42,14 @@
 #   - PARSE_FLOAT
 #   - CONVERT_UNIT
 
+- teslaField: EnergyRemaining
+  teslaType: string
+  teslaUnit: kWh
+  vssSignal: Vehicle.Powertrain.TractionBattery.StateOfCharge.CurrentEnergy
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
 - teslaField: Soc
   teslaType: string
   teslaUnit: percent

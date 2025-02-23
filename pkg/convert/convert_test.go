@@ -35,6 +35,7 @@ func TestConvert(t *testing.T) {
 			{Key: protos.Field_EstBatteryRange, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "19.80471193262205"}}},
 			{Key: protos.Field_ChargeLimitSoc, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "80"}}},
 			{Key: protos.Field_VehicleSpeed, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "21"}}},
+			{Key: protos.Field_EnergyRemaining, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "39.61999911442399"}}},
 		},
 		CreatedAt: timestamppb.New(ts),
 		Vin:       vin,
@@ -60,6 +61,7 @@ func TestConvert(t *testing.T) {
 		{TokenID: 7, Timestamp: ts, Name: "powertrainRange", ValueNumber: 31.872594320493704, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryChargingChargeLimit", ValueNumber: 80, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "speed", ValueNumber: 33.796224, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryStateOfChargeCurrentEnergy", ValueNumber: 39.61999911442399, Source: teslaConnection},
 	}
 
 	assert.ElementsMatch(t, expectedSignals, signals)

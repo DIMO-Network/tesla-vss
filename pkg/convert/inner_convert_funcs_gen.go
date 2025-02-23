@@ -25,6 +25,11 @@ func ConvertDetailedChargeStateDetailedChargeStateValueToPowertrainTractionBatte
 	}
 }
 
+// ConvertEnergyRemainingStringToPowertrainTractionBatteryStateOfChargeCurrentEnergy converts a telemetry datum with key EnergyRemaining to the VSS signal PowertrainTractionBatteryStateOfChargeCurrentEnergy.
+func ConvertEnergyRemainingStringToPowertrainTractionBatteryStateOfChargeCurrentEnergy(val float64) (float64, error) {
+	return val, nil
+}
+
 // ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrent converts a telemetry datum with key Soc to the VSS signal PowertrainTractionBatteryStateOfChargeCurrent.
 func ConvertSocStringToPowertrainTractionBatteryStateOfChargeCurrent(val float64) (float64, error) {
 	return val, nil
