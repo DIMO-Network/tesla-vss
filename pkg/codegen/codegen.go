@@ -240,7 +240,7 @@ func writeInner(tmplInput *TemplateInput, innerPath string) error {
 				if err != nil {
 					panic(err)
 				}
-				existingBodies[fn.Name.Name] = string(buf.Bytes())
+				existingBodies[fn.Name.Name] = buf.String()
 			}
 		}
 	}
@@ -332,6 +332,9 @@ var conversions = map[string]map[string]string{
 	},
 	"bar": {
 		"kPa": "BarsToKilopascals",
+	},
+	"atm": {
+		"kPa": "AtmospheresToKilopascals",
 	},
 	"mi": {
 		"km": "MilesToKilometers",
