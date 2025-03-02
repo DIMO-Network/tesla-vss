@@ -13,7 +13,7 @@
 - teslaField: ACChargingPower
   teslaType: string
   teslaUnit: kW
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.CurrentPower.AC
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.CurrentPowerAC
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
@@ -22,25 +22,26 @@
 - teslaField: DCChargingPower
   teslaType: string
   teslaUnit: kW
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.CurrentPower.DC
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.CurrentPowerDC
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
   # split VSS signal into AC and DC
 
-- teslaField: ACChargingEnergyIn
-  teslaType: string
-  teslaUnit: kWh
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy.AC
-  automations:
-  - PARSE_FLOAT
-  - CONVERT_UNIT
- # split VSS signal into AC and DC
+# # TODO(elffjs): Bring this back?
+# - teslaField: ACChargingEnergyIn
+#   teslaType: string
+#   teslaUnit: kWh
+#   vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergyAC
+#   automations:
+#   - PARSE_FLOAT
+#   - CONVERT_UNIT
+#  # split VSS signal into AC and DC
 
 - teslaField: DCChargingEnergyIn
   teslaType: string
   teslaUnit: kWh
-  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy.DC
+  vssSignal: Vehicle.Powertrain.TractionBattery.Charging.AddedEnergy
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
@@ -56,7 +57,7 @@
 
 - teslaField: TpmsPressureFl
   teslaType: string
-  teslaUnit: bar
+  teslaUnit: atm
   vssSignal: Vehicle.Chassis.Axle.Row1.Wheel.Left.Tire.Pressure
   automations:
   - PARSE_FLOAT
@@ -64,7 +65,7 @@
 
 - teslaField: TpmsPressureFr
   teslaType: string
-  teslaUnit: bar
+  teslaUnit: atm
   vssSignal: Vehicle.Chassis.Axle.Row1.Wheel.Right.Tire.Pressure
   automations:
   - PARSE_FLOAT
@@ -72,7 +73,7 @@
 
 - teslaField: TpmsPressureRl
   teslaType: string
-  teslaUnit: bar
+  teslaUnit: atm
   vssSignal: Vehicle.Chassis.Axle.Row2.Wheel.Left.Tire.Pressure
   automations:
   - PARSE_FLOAT
@@ -80,7 +81,7 @@
 
 - teslaField: TpmsPressureRr
   teslaType: string
-  teslaUnit: bar
+  teslaUnit: atm
   vssSignal: Vehicle.Chassis.Axle.Row2.Wheel.Right.Tire.Pressure
   automations:
   - PARSE_FLOAT
