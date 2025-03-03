@@ -23,7 +23,7 @@ func TestConvert(t *testing.T) {
 	pl := &protos.Payload{
 		Data: []*protos.Datum{
 			{Key: protos.Field_Location, Value: &protos.Value{Value: &protos.Value_LocationValue{LocationValue: &protos.LocationValue{Latitude: 30.267222, Longitude: -97.743056}}}},
-			// {Key: protos.Field_ACChargingPower, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "5.700000084936619"}}},
+			{Key: protos.Field_ACChargingPower, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "5.700000084936619"}}},
 			{Key: protos.Field_DCChargingEnergyIn, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "2.380388924359452"}}},
 			{Key: protos.Field_DetailedChargeState, Value: &protos.Value{Value: &protos.Value_DetailedChargeStateValue{DetailedChargeStateValue: protos.DetailedChargeStateValue_DetailedChargeStateCharging}}},
 			{Key: protos.Field_Soc, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "18.155283129013426"}}},
@@ -36,6 +36,11 @@ func TestConvert(t *testing.T) {
 			{Key: protos.Field_ChargeLimitSoc, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "80"}}},
 			{Key: protos.Field_VehicleSpeed, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "21"}}},
 			{Key: protos.Field_EnergyRemaining, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "39.61999911442399"}}},
+			{Key: protos.Field_DoorState, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "DriverFront|PassengerFront"}}},
+			{Key: protos.Field_FdWindow, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "Opened"}}},
+			{Key: protos.Field_FpWindow, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "Opened"}}},
+			{Key: protos.Field_RdWindow, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "Closed"}}},
+			{Key: protos.Field_RpWindow, Value: &protos.Value{Value: &protos.Value_StringValue{StringValue: "PartiallyOpen"}}},
 		},
 		CreatedAt: timestamppb.New(ts),
 		Vin:       vin,
@@ -49,7 +54,7 @@ func TestConvert(t *testing.T) {
 	expectedSignals := []vss.Signal{
 		{TokenID: 7, Timestamp: ts, Name: "currentLocationLatitude", ValueNumber: 30.267222, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "currentLocationLongitude", ValueNumber: -97.743056, Source: teslaConnection},
-		// {TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryCurrentPower", ValueNumber: 5700.000084936619, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryCurrentPower", ValueNumber: 5700.000084936619, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryChargingIsCharging", ValueNumber: 1, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryChargingAddedEnergy", ValueNumber: 2.380388924359452, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryStateOfChargeCurrent", ValueNumber: 18.155283129013426, Source: teslaConnection},
@@ -62,6 +67,14 @@ func TestConvert(t *testing.T) {
 		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryChargingChargeLimit", ValueNumber: 80, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "speed", ValueNumber: 33.796224, Source: teslaConnection},
 		{TokenID: 7, Timestamp: ts, Name: "powertrainTractionBatteryStateOfChargeCurrentEnergy", ValueNumber: 39.61999911442399, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow1DriverSideIsOpen", ValueNumber: 1, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow1PassengerSideIsOpen", ValueNumber: 1, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow2DriverSideIsOpen", ValueNumber: 0, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow2PassengerSideIsOpen", ValueNumber: 0, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow1DriverSideWindowIsOpen", ValueNumber: 1, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow1PassengerSideWindowIsOpen", ValueNumber: 1, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow2DriverSideWindowIsOpen", ValueNumber: 0, Source: teslaConnection},
+		{TokenID: 7, Timestamp: ts, Name: "cabinDoorRow2PassengerSideWindowIsOpen", ValueNumber: 1, Source: teslaConnection},
 	}
 
 	assert.ElementsMatch(t, expectedSignals, signals)

@@ -1,6 +1,8 @@
 package convert
 
 import (
+	"strings"
+
 	"github.com/DIMO-Network/tesla-vss/pkg/unit"
 	"github.com/teslamotors/fleet-telemetry/protos"
 )
@@ -109,4 +111,56 @@ func ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimit(v
 // Before being passed to this function, the units are converted using MilesPerHourToKilometersPerHour
 func ConvertVehicleSpeedStringToSpeed(val float64) (float64, error) {
 	return val, nil
+}
+
+// ConvertDoorStateStringToCabinDoorRow1DriverSideIsOpen converts a telemetry datum with key DoorState to the VSS signal CabinDoorRow1DriverSideIsOpen.
+func ConvertDoorStateStringToCabinDoorRow1DriverSideIsOpen(val string) (float64, error) {
+	if strings.Contains(val, "DriverFront") {
+		return 1, nil
+	}
+	return 0, nil
+}
+
+// ConvertDoorStateStringToCabinDoorRow1PassengerSideIsOpen converts a telemetry datum with key DoorState to the VSS signal CabinDoorRow1PassengerSideIsOpen.
+func ConvertDoorStateStringToCabinDoorRow1PassengerSideIsOpen(val string) (float64, error) {
+	if strings.Contains(val, "PassengerFront") {
+		return 1, nil
+	}
+	return 0, nil
+}
+
+// ConvertDoorStateStringToCabinDoorRow2DriverSideIsOpen converts a telemetry datum with key DoorState to the VSS signal CabinDoorRow2DriverSideIsOpen.
+func ConvertDoorStateStringToCabinDoorRow2DriverSideIsOpen(val string) (float64, error) {
+	if strings.Contains(val, "DriverRear") {
+		return 1, nil
+	}
+	return 0, nil
+}
+
+// ConvertDoorStateStringToCabinDoorRow2PassengerSideIsOpen converts a telemetry datum with key DoorState to the VSS signal CabinDoorRow2PassengerSideIsOpen.
+func ConvertDoorStateStringToCabinDoorRow2PassengerSideIsOpen(val string) (float64, error) {
+	if strings.Contains(val, "PassengerRear") {
+		return 1, nil
+	}
+	return 0, nil
+}
+
+// ConvertFdWindowStringToCabinDoorRow1DriverSideWindowIsOpen converts a telemetry datum with key FdWindow to the VSS signal CabinDoorRow1DriverSideWindowIsOpen.
+func ConvertFdWindowStringToCabinDoorRow1DriverSideWindowIsOpen(val string) (float64, error) {
+	return windowStateToIsOpen(val), nil
+}
+
+// ConvertFpWindowStringToCabinDoorRow1PassengerSideWindowIsOpen converts a telemetry datum with key FpWindow to the VSS signal CabinDoorRow1PassengerSideWindowIsOpen.
+func ConvertFpWindowStringToCabinDoorRow1PassengerSideWindowIsOpen(val string) (float64, error) {
+	return windowStateToIsOpen(val), nil
+}
+
+// ConvertRdWindowStringToCabinDoorRow2DriverSideWindowIsOpen converts a telemetry datum with key RdWindow to the VSS signal CabinDoorRow2DriverSideWindowIsOpen.
+func ConvertRdWindowStringToCabinDoorRow2DriverSideWindowIsOpen(val string) (float64, error) {
+	return windowStateToIsOpen(val), nil
+}
+
+// ConvertRpWindowStringToCabinDoorRow2PassengerSideWindowIsOpen converts a telemetry datum with key RpWindow to the VSS signal CabinDoorRow2PassengerSideWindowIsOpen.
+func ConvertRpWindowStringToCabinDoorRow2PassengerSideWindowIsOpen(val string) (float64, error) {
+	return windowStateToIsOpen(val), nil
 }
