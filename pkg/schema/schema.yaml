@@ -127,3 +127,35 @@
   automations:
   - PARSE_FLOAT
   - CONVERT_UNIT
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.DriverSide.IsOpen
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.PassengerSide.IsOpen
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.DriverSide.IsOpen
+
+- teslaField: DoorState
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.PassengerSide.IsOpen
+
+- teslaField: FdWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.DriverSide.Window.IsOpen
+
+- teslaField: FpWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row1.PassengerSide.Window.IsOpen
+
+- teslaField: RdWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.DriverSide.Window.IsOpen
+
+- teslaField: RpWindow
+  teslaType: string
+  vssSignal: Vehicle.Cabin.Door.Row2.PassengerSide.Window.IsOpen

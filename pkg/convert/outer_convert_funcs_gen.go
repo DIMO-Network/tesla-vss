@@ -288,6 +288,142 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 				}
 			}
 		}
+		if d.GetKey() == protos.Field_DoorState {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertDoorStateStringToCabinDoorRow1DriverSideIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow1DriverSideIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
+		if d.GetKey() == protos.Field_DoorState {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertDoorStateStringToCabinDoorRow1PassengerSideIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow1PassengerSideIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
+		if d.GetKey() == protos.Field_DoorState {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertDoorStateStringToCabinDoorRow2DriverSideIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow2DriverSideIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
+		if d.GetKey() == protos.Field_DoorState {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertDoorStateStringToCabinDoorRow2PassengerSideIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow2PassengerSideIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
+		if d.GetKey() == protos.Field_FdWindow {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertFdWindowStringToCabinDoorRow1DriverSideWindowIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow1DriverSideWindowIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
+		if d.GetKey() == protos.Field_FpWindow {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertFpWindowStringToCabinDoorRow1PassengerSideWindowIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow1PassengerSideWindowIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
+		if d.GetKey() == protos.Field_RdWindow {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertRdWindowStringToCabinDoorRow2DriverSideWindowIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow2DriverSideWindowIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
+		if d.GetKey() == protos.Field_RpWindow {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertRpWindowStringToCabinDoorRow2PassengerSideWindowIsOpenWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "cabinDoorRow2PassengerSideWindowIsOpen",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
 	}
 
 	return out, outErr
@@ -447,4 +583,36 @@ func ConvertVehicleSpeedStringToSpeedWrapper(wrap string) (float64, error) {
 	fp = unit.MilesPerHourToKilometersPerHour(fp)
 
 	return ConvertVehicleSpeedStringToSpeed(fp)
+}
+
+func ConvertDoorStateStringToCabinDoorRow1DriverSideIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertDoorStateStringToCabinDoorRow1DriverSideIsOpen(wrap)
+}
+
+func ConvertDoorStateStringToCabinDoorRow1PassengerSideIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertDoorStateStringToCabinDoorRow1PassengerSideIsOpen(wrap)
+}
+
+func ConvertDoorStateStringToCabinDoorRow2DriverSideIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertDoorStateStringToCabinDoorRow2DriverSideIsOpen(wrap)
+}
+
+func ConvertDoorStateStringToCabinDoorRow2PassengerSideIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertDoorStateStringToCabinDoorRow2PassengerSideIsOpen(wrap)
+}
+
+func ConvertFdWindowStringToCabinDoorRow1DriverSideWindowIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertFdWindowStringToCabinDoorRow1DriverSideWindowIsOpen(wrap)
+}
+
+func ConvertFpWindowStringToCabinDoorRow1PassengerSideWindowIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertFpWindowStringToCabinDoorRow1PassengerSideWindowIsOpen(wrap)
+}
+
+func ConvertRdWindowStringToCabinDoorRow2DriverSideWindowIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertRdWindowStringToCabinDoorRow2DriverSideWindowIsOpen(wrap)
+}
+
+func ConvertRpWindowStringToCabinDoorRow2PassengerSideWindowIsOpenWrapper(wrap string) (float64, error) {
+	return ConvertRpWindowStringToCabinDoorRow2PassengerSideWindowIsOpen(wrap)
 }
