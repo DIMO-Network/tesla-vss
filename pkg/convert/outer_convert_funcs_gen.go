@@ -271,6 +271,23 @@ func ProcessPayload(payload *protos.Payload, tokenID uint32, source string) ([]v
 				}
 			}
 		}
+		if d.GetKey() == protos.Field_Odometer {
+			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
+				val, err := ConvertOdometerStringToPowertrainTransmissionTravelledDistanceWrapper(v.StringValue)
+				if err != nil {
+					outErr = append(outErr, err)
+				} else {
+					sig := vss.Signal{
+						TokenID:   tokenID,
+						Name:      "powertrainTransmissionTravelledDistance",
+						Timestamp: ts,
+						Source:    source,
+					}
+					sig.SetValue(val)
+					out = append(out, sig)
+				}
+			}
+		}
 		if d.GetKey() == protos.Field_VehicleSpeed {
 			if v, ok := d.GetValue().Value.(*protos.Value_StringValue); ok {
 				val, err := ConvertVehicleSpeedStringToSpeedWrapper(v.StringValue)
@@ -571,6 +588,18 @@ func ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimitWr
 	}
 
 	return ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimit(fp)
+}
+
+func ConvertOdometerStringToPowertrainTransmissionTravelledDistanceWrapper(wrap string) (float64, error) {
+	fp, err := strconv.ParseFloat(wrap, 64)
+	if err != nil {
+		var tmpOut float64
+		return tmpOut, fmt.Errorf("failed to parse float: %w", err)
+	}
+
+	fp = unit.MilesToKilometers(fp)
+
+	return ConvertOdometerStringToPowertrainTransmissionTravelledDistance(fp)
 }
 
 func ConvertVehicleSpeedStringToSpeedWrapper(wrap string) (float64, error) {

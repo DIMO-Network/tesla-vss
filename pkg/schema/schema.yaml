@@ -120,6 +120,14 @@
   - PARSE_FLOAT
   - CONVERT_UNIT
 
+- teslaField: Odometer
+  teslaType: string
+  teslaUnit: mi
+  vssSignal: Vehicle.Powertrain.Transmission.TravelledDistance
+  automations:
+  - PARSE_FLOAT
+  - CONVERT_UNIT
+
 - teslaField: VehicleSpeed
   teslaType: string
   teslaUnit: mph
