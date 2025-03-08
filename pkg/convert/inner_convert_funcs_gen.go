@@ -106,6 +106,13 @@ func ConvertChargeLimitSocStringToPowertrainTractionBatteryChargingChargeLimit(v
 	return val, nil
 }
 
+// ConvertOdometerStringToPowertrainTransmissionTravelledDistance converts a telemetry datum with key Odometer to the VSS signal PowertrainTransmissionTravelledDistance.
+// Before being passed to this function, the string value is parsed into a float64.
+// Before being passed to this function, the units are converted using MilesToKilometers
+func ConvertOdometerStringToPowertrainTransmissionTravelledDistance(val float64) (float64, error) {
+	return val, nil
+}
+
 // ConvertVehicleSpeedStringToSpeed converts a telemetry datum with key VehicleSpeed to the VSS signal Speed.
 // Before being passed to this function, the string value is parsed into a float64.
 // Before being passed to this function, the units are converted using MilesPerHourToKilometersPerHour
